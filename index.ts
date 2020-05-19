@@ -1,14 +1,23 @@
 import express from 'express';
-const app = express();
-app.use(express.json());
+import cors from 'cors';
 
-const PORT = 3003;
+declare let process: {
+  env: {
+    PORT: number;
+  };
+};
+
+const app = express();
+
+app.use(express.json());
+app.use(cors());
 
 app.get('/ping', (_req, res) => {
   console.log('someone pings');
   res.send('pong');
 });
 
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
