@@ -11,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('client'));
 
 app.get('/ping', (_req, res) => {
   console.log('someone pings');
