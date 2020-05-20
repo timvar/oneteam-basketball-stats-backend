@@ -20,4 +20,5 @@ export default ({ url }: TInput) => {
 
   mongoose.connection.on('disconnected', connect);
   mongoose.set('useFindAndModify', false);
+  mongoose.set('useCreateIndex', true);
 };

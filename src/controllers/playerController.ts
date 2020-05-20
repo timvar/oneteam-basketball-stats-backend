@@ -1,4 +1,4 @@
-import Player, { PlayerI } from '../models/player.model';
+import Player, { PlayerI } from '../models/playerModel';
 
 interface CreatePlayerInput {
   playerName: PlayerI['playerName'];

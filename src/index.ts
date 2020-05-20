@@ -3,8 +3,9 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import playerRouter from './routes/player.routes';
-import pingRouter from './routes/ping.routes';
+import playerRouter from './routes/playerRoutes';
+import pingRouter from './routes/pingRoutes';
+import statRouter from './routes/statRoutes';
 import connect from './connect';
 
 declare let process: {
@@ -28,6 +29,7 @@ morgan.token('body', function (req) {
 
 app.use('/api/ping', pingRouter);
 app.use('/api/players', playerRouter);
+app.use('/api/stats', statRouter);
 
 const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
