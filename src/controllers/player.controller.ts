@@ -11,7 +11,11 @@ interface UpdatePlayerInput {
   playerNumber: PlayerI['playerNumber'];
 }
 
-const getAll = async (): Promise<PlayerI[]> => {
+interface DeletePlayerInput {
+  playerId: PlayerI['id'];
+}
+
+const readAll = async (): Promise<PlayerI[]> => {
   return await Player.find({});
 };
 
@@ -30,11 +34,20 @@ const updatePlayer = async ({
   playerName,
   playerNumber,
 }: UpdatePlayerInput): Promise<PlayerI | null> => {
-  return await Player.findByIdAndUpdate(playerId, { playerName, playerNumber }, {new: true});
+  return await Player.findByIdAndUpdate(
+    playerId,
+    { playerName, playerNumber },
+    { new: true },
+  );
+};
+
+const deletePlayer = async ({ playerId }: DeletePlayerInput) => {
+  await Player.findByIdAndRemove(playerId);
 };
 
 export default {
   createPlayer,
-  getAll,
-  updatePlayer
+  readAll,
+  updatePlayer,
+  deletePlayer
 };
