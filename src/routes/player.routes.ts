@@ -16,4 +16,13 @@ router.post('/', async (req, res) => {
   return res.send(player);
 });
 
+router.put('/:id', async (req, res) => {
+  const player = await playerController.updatePlayer({
+    playerId: req.params.id,
+    playerName: req.body.playerName,
+    playerNumber: req.body.playerNumber,
+  });
+  return res.send(player);
+});
+
 export default router;

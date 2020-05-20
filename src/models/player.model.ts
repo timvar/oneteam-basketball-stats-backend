@@ -2,6 +2,7 @@ import mongoose, {Schema, Document} from 'mongoose';
 mongoose.set('useCreateIndex', true);
 
 export interface PlayerI extends Document {
+  id: string;
   playerName: string;
   playerNumber: number;
 }

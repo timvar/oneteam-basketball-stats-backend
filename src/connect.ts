@@ -19,4 +19,5 @@ export default ({ url }: TInput) => {
   connect();
 
   mongoose.connection.on('disconnected', connect);
+  mongoose.set('useFindAndModify', false);
 };
