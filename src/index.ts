@@ -6,6 +6,9 @@ import morgan from 'morgan';
 import playerRouter from './routes/playerRoutes';
 import pingRouter from './routes/pingRoutes';
 import statRouter from './routes/statRoutes';
+import teamRouter from './routes/teamRoutes';
+// import gameRouter from './routes/gameRoutes';
+// import userRouter from './routes/userRoutes';
 import connect from './connect';
 
 declare let process: {
@@ -30,6 +33,9 @@ morgan.token('body', function (req) {
 app.use('/api/ping', pingRouter);
 app.use('/api/players', playerRouter);
 app.use('/api/stats', statRouter);
+app.use('/api/teams', teamRouter);
+// app.use('/api/games', gameRouter);
+// app.use('/api/users', userRouter);
 
 const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
