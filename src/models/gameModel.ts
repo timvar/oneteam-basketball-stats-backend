@@ -1,4 +1,6 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+import { TeamI } from './teamModel';
+import { UserI } from './userModel';
 
 export interface GameI extends Document {
   id: string;
@@ -7,14 +9,18 @@ export interface GameI extends Document {
   gameNumber: string;
   description: string;
   gameDate: string;
+  user: UserI['_id'];
+  team: TeamI['_id'];
 }
 
 const gameSchema: Schema = new Schema({
-  homeTeam: { type: String, required: true },  
+  homeTeam: { type: String, required: true },
   awayTeam: { type: String, required: true },
-  gameNumber: { type: String, required: true },  
-  description: { type: String, required: true },  
-  gameDate: { type: String, required: true },  
+  gameNumber: { type: String, required: true },
+  description: { type: String, required: true },
+  gameDate: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: true },
+  team: { type: Schema.Types.ObjectId, required: true },
 });
 
 gameSchema.set('toJSON', {

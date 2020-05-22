@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     userName: req.body.userName,
     password: req.body.password,
   });
-  
+
   return res.send(user);
 });
 

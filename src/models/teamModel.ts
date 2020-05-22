@@ -1,4 +1,4 @@
-import mongoose, {Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface TeamI extends Document {
   id: string;
@@ -6,7 +6,7 @@ export interface TeamI extends Document {
 }
 
 const teamSchema: Schema = new Schema({
-  teamName: { type: String, required: true },  
+  teamName: { type: String, required: true },
 });
 
 teamSchema.set('toJSON', {

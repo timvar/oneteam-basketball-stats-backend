@@ -5,7 +5,7 @@ interface CreateTeamInput {
   teamName: TeamI['teamName'];
 }
 
-interface FindOneTeamInput {
+interface FindTeamInput {
   teamId: TeamI['id'];
 }
 
@@ -22,14 +22,16 @@ const readAll = async (): Promise<TeamI[]> => {
   return await Team.find({});
 };
 
-const readTeam = async ({teamId}: FindOneTeamInput): Promise<TeamI | null> => {
+const readTeam = async ({ teamId }: FindTeamInput): Promise<TeamI | null> => {
   return await Team.findById(teamId);
 };
 
-const readPlayersByTeam = async ({teamId}: FindOneTeamInput): Promise<PlayerI[]> => {
+const readPlayersByTeam = async ({
+  teamId,
+}: FindTeamInput): Promise<PlayerI[]> => {
   try {
     const team = await Team.findById(teamId);
-    return await Player.find({team: team?._id});
+    return await Player.find({ team: team?._id });
   } catch (error) {
     throw new Error('players not found');
   }

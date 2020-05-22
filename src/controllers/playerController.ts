@@ -1,5 +1,5 @@
 import Player, { PlayerI } from '../models/playerModel';
-import {TeamI} from '../models/teamModel';
+import { TeamI } from '../models/teamModel';
 
 interface CreatePlayerInput {
   playerName: PlayerI['playerName'];
@@ -25,13 +25,12 @@ const readAll = async (): Promise<PlayerI[]> => {
 const createPlayer = async ({
   playerName,
   playerNumber,
-  team
+  team,
 }: CreatePlayerInput): Promise<PlayerI> => {
-  
   return await Player.create({
     playerName,
     playerNumber,
-    team
+    team,
   });
 };
 
@@ -39,12 +38,12 @@ const updatePlayer = async ({
   playerId,
   playerName,
   playerNumber,
-  team
+  team,
 }: UpdatePlayerInput): Promise<PlayerI | null> => {
   return await Player.findByIdAndUpdate(
     playerId,
     { playerName, playerNumber, team },
-    { new: true },
+    { new: true }
   );
 };
 
@@ -56,5 +55,5 @@ export default {
   createPlayer,
   readAll,
   updatePlayer,
-  deletePlayer
+  deletePlayer,
 };

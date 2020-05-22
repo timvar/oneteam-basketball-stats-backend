@@ -46,11 +46,7 @@ const createStat = async (stat: CreateStatInput): Promise<StatI> => {
 };
 
 const updateStat = async (stat: UpdateStatInput): Promise<StatI | null> => {
-  return await Stat.findByIdAndUpdate(
-    stat.statId,
-    stat,
-    { new: true },
-  );
+  return await Stat.findByIdAndUpdate(stat.statId, stat, { new: true });
 };
 
 const deleteStat = async ({ statId }: DeleteStatInput) => {

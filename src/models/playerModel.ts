@@ -1,5 +1,5 @@
-import mongoose, {Schema, Document} from 'mongoose';
-import {TeamI} from './teamModel';
+import mongoose, { Schema, Document } from 'mongoose';
+import { TeamI } from './teamModel';
 
 export interface PlayerI extends Document {
   id: string;
@@ -11,7 +11,7 @@ export interface PlayerI extends Document {
 const playerSchema: Schema = new Schema({
   playerName: { type: String, required: true },
   playerNumber: { type: Number, required: true },
-  team: {type: Schema.Types.ObjectId, required: true}
+  team: { type: Schema.Types.ObjectId, required: true },
 });
 
 playerSchema.set('toJSON', {

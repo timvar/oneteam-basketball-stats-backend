@@ -6,6 +6,10 @@ interface CreateUserInput {
   password: UserI['password'];
 }
 
+interface FindUserInput {
+  userId: UserI['id'];
+}
+
 interface UpdateUserNameInput {
   userId: UserI['id'];
   userName: UserI['userName'];
@@ -19,14 +23,17 @@ const readAll = async (): Promise<UserI[]> => {
   return await User.find({});
 };
 
+const readUser = async ({ userId }: FindUserInput): Promise<UserI | null> => {
+  return await User.findById(userId);
+};
+
 const createUser = async ({
   userName,
-  password
+  password,
 }: CreateUserInput): Promise<UserI> => {
-
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
-  
+
   return await User.create({
     userName,
     passwordHash,
@@ -37,11 +44,7 @@ const updateUserName = async ({
   userId,
   userName,
 }: UpdateUserNameInput): Promise<UserI | null> => {
-  return await User.findByIdAndUpdate(
-    userId,
-    { userName },
-    { new: true },
-  );
+  return await User.findByIdAndUpdate(userId, { userName }, { new: true });
 };
 
 const deleteUser = async ({ userId }: DeleteUserInput) => {
@@ -51,6 +54,7 @@ const deleteUser = async ({ userId }: DeleteUserInput) => {
 export default {
   createUser,
   readAll,
+  readUser,
   updateUserName,
-  deleteUser
+  deleteUser,
 };

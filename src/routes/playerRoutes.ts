@@ -10,14 +10,14 @@ router.get('/', async (_req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const team = await teamController.readTeam({teamId: req.body.teamId});
-  
+  const team = await teamController.readTeam({ teamId: req.body.teamId });
+
   const player = await playerController.createPlayer({
     playerName: req.body.playerName,
     playerNumber: req.body.playerNumber,
-    team: team?._id
+    team: team?._id,
   });
-  
+
   return res.send(player);
 });
 
@@ -27,7 +27,7 @@ router.put('/:id', async (req, res) => {
     playerId: req.params.id,
     playerName: req.body.playerName,
     playerNumber: req.body.playerNumber,
-    team: team?._id
+    team: team?._id,
   });
 
   return res.send(player);
