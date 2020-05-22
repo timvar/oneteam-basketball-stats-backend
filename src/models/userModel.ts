@@ -1,8 +1,10 @@
 import mongoose, {Schema, Document} from 'mongoose';
 
 export interface UserI extends Document {
+  id: string;
   userName: string;
   passwordHash: string;
+  password: string;
 }
 
 const userSchema: Schema = new Schema({
