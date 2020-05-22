@@ -27,8 +27,12 @@ const readTeam = async ({teamId}: FindOneTeamInput): Promise<TeamI | null> => {
 };
 
 const readPlayersByTeam = async ({teamId}: FindOneTeamInput): Promise<PlayerI[]> => {
-  const team = await Team.findById(teamId);
-  return await Player.find({team: team?._id});
+  try {
+    const team = await Team.findById(teamId);
+    return await Player.find({team: team?._id});
+  } catch (error) {
+    throw new Error('players not found');
+  }
 };
 
 const createTeam = async ({ teamName }: CreateTeamInput): Promise<TeamI> => {

@@ -15,8 +15,12 @@ router.get('/:id', async (req, res) => {
 
 
 router.get('/:id/players', async (req, res) => {
-  const team = await teamController.readPlayersByTeam({teamId: req.params.id});
-  res.send(team);
+  try {
+    const team = await teamController.readPlayersByTeam({teamId: req.params.id});
+    res.send(team);
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
 });
 
 router.post('/', async (req, res) => {
