@@ -10,6 +10,10 @@ interface FindUserInput {
   userId: UserI['id'];
 }
 
+interface FindUserByNameInput {
+  userName: UserI['userName'];
+}
+
 interface UpdateUserNameInput {
   userId: UserI['id'];
   userName: UserI['userName'];
@@ -25,6 +29,12 @@ const readAll = async (): Promise<UserI[]> => {
 
 const readUser = async ({ userId }: FindUserInput): Promise<UserI | null> => {
   return await User.findById(userId);
+};
+
+const readUserByName = async ({
+  userName,
+}: FindUserByNameInput): Promise<UserI | null> => {
+  return await User.findOne({ userName });
 };
 
 const createUser = async ({
@@ -55,6 +65,7 @@ export default {
   createUser,
   readAll,
   readUser,
+  readUserByName,
   updateUserName,
   deleteUser,
 };

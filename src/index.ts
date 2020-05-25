@@ -7,14 +7,16 @@ import playerRouter from './routes/playerRoutes';
 import pingRouter from './routes/pingRoutes';
 import statRouter from './routes/statRoutes';
 import teamRouter from './routes/teamRoutes';
-// import gameRouter from './routes/gameRoutes';
+import gameRouter from './routes/gameRoutes';
 import userRouter from './routes/userRoutes';
+import loginRouter from './routes/loginRoutes';
 import connect from './connect';
 
 declare let process: {
   env: {
     PORT: number;
     MONGODB_URI: string;
+    SECRET: string;
   };
 };
 
@@ -34,8 +36,9 @@ app.use('/api/ping', pingRouter);
 app.use('/api/players', playerRouter);
 app.use('/api/stats', statRouter);
 app.use('/api/teams', teamRouter);
-// app.use('/api/games', gameRouter);
+app.use('/api/games', gameRouter);
 app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 
 const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
