@@ -1,10 +1,16 @@
 import Player, { PlayerI } from '../models/playerModel';
 import { TeamI } from '../models/teamModel';
+import { UserI } from '../models/userModel';
 
 interface CreatePlayerInput {
   playerName: PlayerI['playerName'];
   playerNumber: PlayerI['playerNumber'];
   team: TeamI['_id'];
+  user: UserI['_id'];
+}
+
+interface FindPlayersInput {
+  user: UserI['_id'];
 }
 
 interface UpdatePlayerInput {
@@ -18,20 +24,30 @@ interface DeletePlayerInput {
   playerId: PlayerI['id'];
 }
 
-const readAll = async (): Promise<PlayerI[]> => {
-  return await Player.find({});
+const readAll = async ({ user }: FindPlayersInput): Promise<PlayerI[]> => {
+  try {
+    return await Player.find({ user });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const createPlayer = async ({
   playerName,
   playerNumber,
   team,
+  user,
 }: CreatePlayerInput): Promise<PlayerI> => {
-  return await Player.create({
-    playerName,
-    playerNumber,
-    team,
-  });
+  try {
+    return await Player.create({
+      playerName,
+      playerNumber,
+      team,
+      user,
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const updatePlayer = async ({

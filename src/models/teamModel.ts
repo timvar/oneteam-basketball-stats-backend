@@ -1,12 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { UserI } from './userModel';
 
 export interface TeamI extends Document {
   id: string;
   teamName: string;
+  user: UserI['_id'];
 }
 
 const teamSchema: Schema = new Schema({
   teamName: { type: String, required: true },
+  user: { type: Schema.Types.ObjectId, required: true },
 });
 
 teamSchema.set('toJSON', {

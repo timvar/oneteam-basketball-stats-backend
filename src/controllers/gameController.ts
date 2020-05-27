@@ -12,6 +12,10 @@ interface CreateGameInput {
   team: TeamI['_id'];
 }
 
+interface FindGamesInput {
+  user: UserI['_id'];
+}
+
 interface UpdateGameInput {
   gameId: GameI['id'];
   homeTeam: GameI['homeTeam'];
@@ -27,8 +31,12 @@ interface DeleteGameInput {
   gameId: GameI['id'];
 }
 
-const readAll = async (): Promise<GameI[]> => {
-  return await Game.find({});
+const readAll = async ({ user }: FindGamesInput): Promise<GameI[]> => {
+  try {
+    return await Game.find({ user });
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 const createGame = async ({

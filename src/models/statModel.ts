@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { UserI } from './userModel';
+import { GameI } from './gameModel';
 
 export interface StatI extends Document {
   id: string;
@@ -15,6 +17,8 @@ export interface StatI extends Document {
   ast: number;
   blk: number;
   stl: number;
+  user: UserI['_id'];
+  game: GameI['_id'];
 }
 
 const statSchema: Schema = new Schema({
@@ -31,6 +35,8 @@ const statSchema: Schema = new Schema({
   ast: { type: Number },
   blk: { type: Number },
   stl: { type: Number },
+  user: { type: Schema.Types.ObjectId, required: true },
+  game: { type: Schema.Types.ObjectId, required: true },
 });
 
 statSchema.set('toJSON', {

@@ -1,34 +1,69 @@
 import express from 'express';
 import teamController from '../controllers/teamController';
+import { getUser } from '../utils/auth';
 
 const router = express.Router();
 
-router.get('/', async (_req, res) => {
-  const teams = await teamController.readAll();
-  res.send(teams);
+router.get('/', async (req, res) => {
+  try {
+    const user = await getUser(req);
+    if (user) {
+      const teams = await teamController.readAll({ user: user._id });
+      return res.send(teams);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.get('/:id', async (req, res) => {
-  const team = await teamController.readTeam({ teamId: req.params.id });
-  res.send(team);
+  try {
+    const user = await getUser(req);
+    if (user) {
+      const team = await teamController.readTeam({
+        user: user._id,
+        teamId: req.params.id,
+      });
+      return res.send(team);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.get('/:id/players', async (req, res) => {
   try {
-    const team = await teamController.readPlayersByTeam({
-      teamId: req.params.id,
-    });
-    res.send(team);
+    const user = await getUser(req);
+    if (user) {
+      const players = await teamController.readPlayersByTeam({
+        user: user._id,
+        teamId: req.params.id,
+      });
+      return res.send(players);
+    }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    return res.status(401).json({ error: 'missing or invalid token' });
   }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.post('/', async (req, res) => {
-  const team = await teamController.createTeam({
-    teamName: req.body.teamName,
-  });
-  return res.send(team);
+  try {
+    const user = await getUser(req);
+    const { teamName } = req.body;
+    if (user) {
+      const team = await teamController.createTeam({
+        teamName,
+        user: user?._id,
+      });
+      return res.send(team);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.put('/:id', async (req, res) => {
