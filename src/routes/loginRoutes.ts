@@ -12,8 +12,8 @@ declare let process: {
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { userName, password } = req.body;
-  const user = await userController.readUserByName({ userName });
+  const { username, password } = req.body;
+  const user = await userController.readUserByName({ userName: username });
   const passwordValid =
     user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
