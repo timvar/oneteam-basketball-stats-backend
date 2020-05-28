@@ -19,17 +19,21 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const { playerName, playerNumber, teamId } = req.body;
+  // const { playerName, playerNumber, teamId } = req.body;
+  const { playerName, playerNumber } = req.body;
   try {
     const user = await getUser(req);
-    const team = await teamController.readTeam({ teamId, user: user?._id });
-    if (user && team) {
+    console.log('user', user);
+    // const team = await teamController.readTeam({ teamId, user: user?._id });
+    // if (user && team) {
+    if (user) {
       const player = await playerController.createPlayer({
         playerName,
         playerNumber,
-        team: team._id,
+        //  team: team._id,
         user: user._id,
       });
+      console.log(player);
       return res.send(player);
     }
   } catch (error) {

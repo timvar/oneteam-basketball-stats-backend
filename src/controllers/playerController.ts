@@ -5,7 +5,7 @@ import { UserI } from '../models/userModel';
 interface CreatePlayerInput {
   playerName: PlayerI['playerName'];
   playerNumber: PlayerI['playerNumber'];
-  team: TeamI['_id'];
+  //team: TeamI['_id'];
   user: UserI['_id'];
 }
 
