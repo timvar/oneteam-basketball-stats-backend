@@ -26,14 +26,13 @@ router.post('/', async (req, res) => {
       team,
       user: user?._id,
     });
-    if (user && team) {
+    if (user && selectedTeam) {
       const player = await playerController.createPlayer({
         playerName,
         playerNumber,
         team: selectedTeam._id,
         user: user._id,
       });
-      console.log(player);
       return res.send(player);
     }
   } catch (error) {
