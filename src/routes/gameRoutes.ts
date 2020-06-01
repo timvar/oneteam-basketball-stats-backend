@@ -1,7 +1,6 @@
 import express from 'express';
 import gameController from '../controllers/gameController';
 import teamController from '../controllers/teamController';
-import userController from '../controllers/userController';
 import { getUser } from '../utils/auth';
 
 const router = express.Router();
@@ -26,12 +25,12 @@ router.post('/', async (req, res) => {
     gameNumber,
     description,
     gameDate,
-    teamId,
+    team,
   } = req.body;
   try {
     const user = await getUser(req);
-    const team = await teamController.readTeam({ teamId, user: user?._id });
-    if (user && team) {
+    const teamData = await teamController.readTeam({ team, user: user?._id });
+    if (user && teamData) {
       const game = await gameController.createGame({
         homeTeam,
         awayTeam,
@@ -39,7 +38,7 @@ router.post('/', async (req, res) => {
         description,
         gameDate,
         user: user?._id,
-        team: team?._id,
+        team: teamData?._id,
       });
       return res.send(game);
     }
@@ -50,21 +49,34 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const team = await teamController.readTeam(req.body.teamId);
-  const user = await userController.readUser({ userId: req.body.userId });
-  const { homeTeam, awayTeam, gameNumber, description, gameDate } = req.body;
-  const game = await gameController.updateGame({
-    gameId: req.params.id,
+  const {
     homeTeam,
     awayTeam,
     gameNumber,
     description,
     gameDate,
-    user: user?._id,
-    team: team?._id,
-  });
-
-  return res.send(game);
+    team,
+  } = req.body;
+  try {
+    const user = await getUser(req);
+    const teamData = await teamController.readTeam(team);
+    if (user && teamData) {
+      const game = await gameController.updateGame({
+        gameId: req.params.id,
+        homeTeam,
+        awayTeam,
+        gameNumber,
+        description,
+        gameDate,
+        user: user?._id,
+        team: teamData?._id,
+      });
+      return res.send(game);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.delete('/:id', (req, res) => {

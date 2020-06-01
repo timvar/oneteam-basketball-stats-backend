@@ -6,7 +6,7 @@ export interface PlayerI extends Document {
   id: string;
   playerName: string;
   playerNumber: number;
-  // team: TeamI['_id'];
+  team: TeamI['_id'];
   user: UserI['_id'];
 }
 

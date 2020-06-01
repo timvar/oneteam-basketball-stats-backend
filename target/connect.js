@@ -17,4 +17,6 @@ exports.default = ({ url }) => {
     };
     connect();
     mongoose_1.default.connection.on('disconnected', connect);
+    mongoose_1.default.set('useFindAndModify', false);
+    mongoose_1.default.set('useCreateIndex', true);
 };

@@ -19,18 +19,18 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  // const { playerName, playerNumber, teamId } = req.body;
-  const { playerName, playerNumber } = req.body;
+  const { playerName, playerNumber, team } = req.body;
   try {
     const user = await getUser(req);
-    console.log('user', user);
-    // const team = await teamController.readTeam({ teamId, user: user?._id });
-    // if (user && team) {
-    if (user) {
+    const selectedTeam = await teamController.readTeam({
+      team,
+      user: user?._id,
+    });
+    if (user && team) {
       const player = await playerController.createPlayer({
         playerName,
         playerNumber,
-        //  team: team._id,
+        team: selectedTeam._id,
         user: user._id,
       });
       console.log(player);
@@ -43,12 +43,13 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:id', async (req, res) => {
-  const team = await teamController.readTeam(req.body.teamId);
+  const { playerName, playerNumber, team } = req.body;
+  const selectedTeam = await teamController.readTeam(team);
   const player = await playerController.updatePlayer({
     playerId: req.params.id,
-    playerName: req.body.playerName,
-    playerNumber: req.body.playerNumber,
-    team: team?._id,
+    playerName,
+    playerNumber,
+    team: selectedTeam?._id,
   });
 
   return res.send(player);

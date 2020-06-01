@@ -13,17 +13,17 @@ interface FindTeamsInput {
 }
 
 interface FindTeamInput {
-  teamId: TeamI['id'];
+  team: TeamI['id'];
   user: UserI['_id'];
 }
 
 interface UpdateTeamInput {
-  teamId: TeamI['id'];
+  team: TeamI['id'];
   teamName: TeamI['teamName'];
 }
 
 interface DeleteTeamInput {
-  teamId: TeamI['id'];
+  team: TeamI['id'];
 }
 
 const readAll = async ({ user }: FindTeamsInput): Promise<TeamI[]> => {
@@ -35,13 +35,13 @@ const readAll = async ({ user }: FindTeamsInput): Promise<TeamI[]> => {
 };
 
 const readTeam = async ({
-  teamId,
+  team,
   user,
 }: FindTeamInput): Promise<TeamI | null> => {
   try {
-    const team = await Team.findById(teamId);
-    if (_isEqual(team?.user, user)) {
-      return team;
+    const teamData = await Team.findById(team);
+    if (_isEqual(teamData?.user, user)) {
+      return teamData;
     } else {
       throw new Error('unauthorized user');
     }
@@ -51,13 +51,13 @@ const readTeam = async ({
 };
 
 const readPlayersByTeam = async ({
-  teamId,
+  team,
   user,
 }: FindTeamInput): Promise<PlayerI[]> => {
   try {
-    const team = await Team.findById(teamId);
-    if (_isEqual(team?.user, user)) {
-      return await Player.find({ team: team?._id });
+    const teamData = await Team.findById(team);
+    if (_isEqual(teamData?.user, user)) {
+      return await Player.find({ team: teamData?._id });
     }
   } catch (error) {
     throw new Error('players not found');
@@ -76,14 +76,14 @@ const createTeam = async ({
 };
 
 const updateTeam = async ({
-  teamId,
+  team,
   teamName,
 }: UpdateTeamInput): Promise<TeamI | null> => {
-  return await Team.findByIdAndUpdate(teamId, { teamName }, { new: true });
+  return await Team.findByIdAndUpdate(team, { teamName }, { new: true });
 };
 
-const deleteTeam = async ({ teamId }: DeleteTeamInput) => {
-  await Team.findByIdAndRemove(teamId);
+const deleteTeam = async ({ team }: DeleteTeamInput) => {
+  await Team.findByIdAndRemove(team);
 };
 
 export default {

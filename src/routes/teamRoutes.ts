@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
     if (user) {
       const team = await teamController.readTeam({
         user: user._id,
-        teamId: req.params.id,
+        team: req.params.id,
       });
       return res.send(team);
     }
@@ -39,7 +39,7 @@ router.get('/:id/players', async (req, res) => {
     if (user) {
       const players = await teamController.readPlayersByTeam({
         user: user._id,
-        teamId: req.params.id,
+        team: req.params.id,
       });
       return res.send(players);
     }
@@ -68,7 +68,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   const team = await teamController.updateTeam({
-    teamId: req.params.id,
+    team: req.params.id,
     teamName: req.body.teamName,
   });
   return res.send(team);
@@ -76,7 +76,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', (req, res) => {
   try {
-    teamController.deleteTeam({ teamId: req.params.id });
+    teamController.deleteTeam({ team: req.params.id });
     res.status(204).end();
   } catch (error) {
     console.error(error);
