@@ -16,8 +16,8 @@ export interface GameI extends Document {
 const gameSchema: Schema = new Schema({
   homeTeam: { type: String, required: true },
   awayTeam: { type: String, required: true },
-  gameNumber: { type: String, required: true },
-  description: { type: String, required: true },
+  gameNumber: { type: String },
+  description: { type: String },
   gameDate: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, required: true },
   team: { type: Schema.Types.ObjectId, required: true },
