@@ -1,44 +1,22 @@
 import express from 'express';
 import statController from '../controllers/statController';
+import gameController from '../controllers/gameController';
+import { getUser } from '../utils/auth';
 
 const router = express.Router();
 
-interface NewStat {
-  playerNumber: number;
-  onePm: number;
-  twoPm: number;
-  threePm: number;
-  onePa: number;
-  twoPa: number;
-  threePa: number;
-  orb: number;
-  to: number;
-  drb: number;
-  ast: number;
-  blk: number;
-  stl: number;
-}
-
-interface UpdatedStat {
-  statId: string;
-  playerNumber: number;
-  onePm: number;
-  twoPm: number;
-  threePm: number;
-  onePa: number;
-  twoPa: number;
-  threePa: number;
-  orb: number;
-  to: number;
-  drb: number;
-  ast: number;
-  blk: number;
-  stl: number;
-}
-
-router.get('/', async (_req, res) => {
-  const stats = await statController.readAll();
-  res.send(stats);
+// TODO ADD USER AUTH CHECK
+router.get('/', async (req, res) => {
+  try {
+    const user = await getUser(req);
+    if (user) {
+      const stats = await statController.readAll();
+      res.send(stats);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 router.post('/', async (req, res) => {
@@ -56,73 +34,36 @@ router.post('/', async (req, res) => {
     ast,
     blk,
     stl,
+    game,
   } = req.body;
 
-  const newStat: NewStat = {
-    playerNumber,
-    onePm,
-    twoPm,
-    threePm,
-    onePa,
-    twoPa,
-    threePa,
-    orb,
-    to,
-    drb,
-    ast,
-    blk,
-    stl,
-  };
-
-  const stat = await statController.createStat(newStat);
-  return res.send(stat);
-});
-
-router.put('/:id', async (req, res) => {
-  const {
-    playerNumber,
-    onePm,
-    twoPm,
-    threePm,
-    onePa,
-    twoPa,
-    threePa,
-    orb,
-    to,
-    drb,
-    ast,
-    blk,
-    stl,
-  } = req.body;
-
-  const newStat: UpdatedStat = {
-    statId: req.params.id,
-    playerNumber,
-    onePm,
-    twoPm,
-    threePm,
-    onePa,
-    twoPa,
-    threePa,
-    orb,
-    to,
-    drb,
-    ast,
-    blk,
-    stl,
-  };
-
-  const stat = await statController.updateStat(newStat);
-  return res.send(stat);
-});
-
-router.delete('/:id', (req, res) => {
   try {
-    statController.deleteStat({ statId: req.params.id });
-    res.status(204).end();
+    const user = await getUser(req);
+    const gameData = await gameController.readGame({ game, user: user?._id });
+    if (user && gameData) {
+      const stat = await statController.createStat({
+        playerNumber,
+        onePm,
+        twoPm,
+        threePm,
+        onePa,
+        twoPa,
+        threePa,
+        orb,
+        to,
+        drb,
+        ast,
+        blk,
+        stl,
+        user: user._id,
+        game: gameData._id,
+      });
+      return res.send(stat);
+    }
   } catch (error) {
-    console.error(error);
+    return res.status(401).json({ error: 'missing or invalid token' });
   }
+  return res.status(401).json({ error: 'missing user' });
 });
 
 export default router;

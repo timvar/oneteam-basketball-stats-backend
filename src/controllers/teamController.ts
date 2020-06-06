@@ -1,5 +1,6 @@
 import Team, { TeamI } from '../models/teamModel';
 import Player, { PlayerI } from '../models/playerModel';
+import Game, { GameI } from '../models/gameModel';
 import { UserI } from '../models/userModel';
 import _isEqual from 'lodash.isequal';
 
@@ -65,6 +66,21 @@ const readPlayersByTeam = async ({
   return [];
 };
 
+const readGamesByTeam = async ({
+  team,
+  user,
+}: FindTeamInput): Promise<GameI[]> => {
+  try {
+    const teamData = await Team.findById(team);
+    if (_isEqual(teamData?.user, user)) {
+      return await Game.find({ team: teamData?._id });
+    }
+  } catch (error) {
+    throw new Error('games not found');
+  }
+  return [];
+};
+
 const createTeam = async ({
   teamName,
   user,
@@ -91,6 +107,7 @@ export default {
   readAll,
   readTeam,
   readPlayersByTeam,
+  readGamesByTeam,
   updateTeam,
   deleteTeam,
 };

@@ -33,6 +33,22 @@ router.get('/:id', async (req, res) => {
   return res.status(401).json({ error: 'missing user' });
 });
 
+router.get('/:id/games', async (req, res) => {
+  try {
+    const user = await getUser(req);
+    if (user) {
+      const games = await teamController.readGamesByTeam({
+        user: user._id,
+        team: req.params.id,
+      });
+      return res.send(games);
+    }
+  } catch (error) {
+    return res.status(401).json({ error: 'missing or invalid token' });
+  }
+  return res.status(401).json({ error: 'missing user' });
+});
+
 router.get('/:id/players', async (req, res) => {
   try {
     const user = await getUser(req);

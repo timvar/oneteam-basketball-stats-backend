@@ -1,6 +1,7 @@
 import Game, { GameI } from '../models/gameModel';
 import { TeamI } from '../models/teamModel';
 import { UserI } from '../models/userModel';
+import _isEqual from 'lodash.isequal';
 
 interface CreateGameInput {
   homeTeam: GameI['homeTeam'];
@@ -13,6 +14,11 @@ interface CreateGameInput {
 }
 
 interface FindGamesInput {
+  user: UserI['_id'];
+}
+
+interface FindGameInput {
+  game: GameI['id'];
   user: UserI['_id'];
 }
 
@@ -34,6 +40,22 @@ interface DeleteGameInput {
 const readAll = async ({ user }: FindGamesInput): Promise<GameI[]> => {
   try {
     return await Game.find({ user });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const readGame = async ({
+  game,
+  user,
+}: FindGameInput): Promise<GameI | null> => {
+  try {
+    const gameData = await Game.findById(game);
+    if (_isEqual(gameData?.user, user)) {
+      return gameData;
+    } else {
+      throw new Error('unauthorized user');
+    }
   } catch (error) {
     throw new Error(error.message);
   }
@@ -82,6 +104,7 @@ const deleteGame = async ({ gameId }: DeleteGameInput) => {
 export default {
   createGame,
   readAll,
+  readGame,
   updateGame,
   deleteGame,
 };
