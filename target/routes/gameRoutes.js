@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const gameController_1 = __importDefault(require("../controllers/gameController"));
 const teamController_1 = __importDefault(require("../controllers/teamController"));
-const userController_1 = __importDefault(require("../controllers/userController"));
 const auth_1 = require("../utils/auth");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,12 +30,28 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     return res.status(401).json({ error: 'missing user' });
 }));
-router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { homeTeam, awayTeam, gameNumber, description, gameDate, teamId, } = req.body;
+router.get('/:id/stats', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield auth_1.getUser(req);
-        const team = yield teamController_1.default.readTeam({ teamId, user: user === null || user === void 0 ? void 0 : user._id });
-        if (user && team) {
+        if (user) {
+            const stats = yield gameController_1.default.readStatsByGame({
+                game: req.params.id,
+                user: user._id,
+            });
+            return res.send(stats);
+        }
+    }
+    catch (error) {
+        return res.status(401).json({ error: 'missing or invalid token' });
+    }
+    return res.status(401).json({ error: 'missing user' });
+}));
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { homeTeam, awayTeam, gameNumber, description, gameDate, team, } = req.body;
+    try {
+        const user = yield auth_1.getUser(req);
+        const teamData = yield teamController_1.default.readTeam({ team, user: user === null || user === void 0 ? void 0 : user._id });
+        if (user && teamData) {
             const game = yield gameController_1.default.createGame({
                 homeTeam,
                 awayTeam,
@@ -44,7 +59,7 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 description,
                 gameDate,
                 user: user === null || user === void 0 ? void 0 : user._id,
-                team: team === null || team === void 0 ? void 0 : team._id,
+                team: teamData === null || teamData === void 0 ? void 0 : teamData._id,
             });
             return res.send(game);
         }
@@ -55,20 +70,28 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.status(401).json({ error: 'missing user' });
 }));
 router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const team = yield teamController_1.default.readTeam(req.body.teamId);
-    const user = yield userController_1.default.readUser({ userId: req.body.userId });
-    const { homeTeam, awayTeam, gameNumber, description, gameDate } = req.body;
-    const game = yield gameController_1.default.updateGame({
-        gameId: req.params.id,
-        homeTeam,
-        awayTeam,
-        gameNumber,
-        description,
-        gameDate,
-        user: user === null || user === void 0 ? void 0 : user._id,
-        team: team === null || team === void 0 ? void 0 : team._id,
-    });
-    return res.send(game);
+    const { homeTeam, awayTeam, gameNumber, description, gameDate, team, } = req.body;
+    try {
+        const user = yield auth_1.getUser(req);
+        const teamData = yield teamController_1.default.readTeam(team);
+        if (user && teamData) {
+            const game = yield gameController_1.default.updateGame({
+                gameId: req.params.id,
+                homeTeam,
+                awayTeam,
+                gameNumber,
+                description,
+                gameDate,
+                user: user === null || user === void 0 ? void 0 : user._id,
+                team: teamData === null || teamData === void 0 ? void 0 : teamData._id,
+            });
+            return res.send(game);
+        }
+    }
+    catch (error) {
+        return res.status(401).json({ error: 'missing or invalid token' });
+    }
+    return res.status(401).json({ error: 'missing user' });
 }));
 router.delete('/:id', (req, res) => {
     try {

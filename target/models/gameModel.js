@@ -23,8 +23,8 @@ const mongoose_1 = __importStar(require("mongoose"));
 const gameSchema = new mongoose_1.Schema({
     homeTeam: { type: String, required: true },
     awayTeam: { type: String, required: true },
-    gameNumber: { type: String, required: true },
-    description: { type: String, required: true },
+    gameNumber: { type: String },
+    description: { type: String },
     gameDate: { type: String, required: true },
     user: { type: mongoose_1.Schema.Types.ObjectId, required: true },
     team: { type: mongoose_1.Schema.Types.ObjectId, required: true },

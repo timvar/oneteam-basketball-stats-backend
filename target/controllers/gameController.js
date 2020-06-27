@@ -13,6 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const gameModel_1 = __importDefault(require("../models/gameModel"));
+const statModel_1 = __importDefault(require("../models/statModel"));
+const lodash_isequal_1 = __importDefault(require("lodash.isequal"));
 const readAll = ({ user }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield gameModel_1.default.find({ user });
@@ -21,11 +23,38 @@ const readAll = ({ user }) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(error.message);
     }
 });
-const createGame = ({ homeTeam, awayTeam, gameNumber, gameDate, user, team, }) => __awaiter(void 0, void 0, void 0, function* () {
+const readStatsByGame = ({ game, user, }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const gameData = yield gameModel_1.default.findById(game);
+        if (lodash_isequal_1.default(gameData === null || gameData === void 0 ? void 0 : gameData.user, user)) {
+            return yield statModel_1.default.find({ game: gameData === null || gameData === void 0 ? void 0 : gameData._id });
+        }
+    }
+    catch (error) {
+        throw new Error('stats not found');
+    }
+    return [];
+});
+const readGame = ({ game, user, }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const gameData = yield gameModel_1.default.findById(game);
+        if (lodash_isequal_1.default(gameData === null || gameData === void 0 ? void 0 : gameData.user, user)) {
+            return gameData;
+        }
+        else {
+            throw new Error('unauthorized user');
+        }
+    }
+    catch (error) {
+        throw new Error(error.message);
+    }
+});
+const createGame = ({ homeTeam, awayTeam, gameNumber, description, gameDate, user, team, }) => __awaiter(void 0, void 0, void 0, function* () {
     return yield gameModel_1.default.create({
         homeTeam,
         awayTeam,
         gameNumber,
+        description,
         gameDate,
         user,
         team,
@@ -40,6 +69,8 @@ const deleteGame = ({ gameId }) => __awaiter(void 0, void 0, void 0, function* (
 exports.default = {
     createGame,
     readAll,
+    readStatsByGame,
+    readGame,
     updateGame,
     deleteGame,
 };

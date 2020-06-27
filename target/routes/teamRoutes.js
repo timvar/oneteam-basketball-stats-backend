@@ -35,9 +35,25 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (user) {
             const team = yield teamController_1.default.readTeam({
                 user: user._id,
-                teamId: req.params.id,
+                team: req.params.id,
             });
             return res.send(team);
+        }
+    }
+    catch (error) {
+        return res.status(401).json({ error: 'missing or invalid token' });
+    }
+    return res.status(401).json({ error: 'missing user' });
+}));
+router.get('/:id/games', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield auth_1.getUser(req);
+        if (user) {
+            const games = yield teamController_1.default.readGamesByTeam({
+                user: user._id,
+                team: req.params.id,
+            });
+            return res.send(games);
         }
     }
     catch (error) {
@@ -51,7 +67,7 @@ router.get('/:id/players', (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (user) {
             const players = yield teamController_1.default.readPlayersByTeam({
                 user: user._id,
-                teamId: req.params.id,
+                team: req.params.id,
             });
             return res.send(players);
         }
@@ -80,14 +96,14 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const team = yield teamController_1.default.updateTeam({
-        teamId: req.params.id,
+        team: req.params.id,
         teamName: req.body.teamName,
     });
     return res.send(team);
 }));
 router.delete('/:id', (req, res) => {
     try {
-        teamController_1.default.deleteTeam({ teamId: req.params.id });
+        teamController_1.default.deleteTeam({ team: req.params.id });
         res.status(204).end();
     }
     catch (error) {

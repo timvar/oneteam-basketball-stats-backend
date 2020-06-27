@@ -31,21 +31,20 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.status(401).json({ error: 'missing user' });
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const { playerName, playerNumber, teamId } = req.body;
-    const { playerName, playerNumber } = req.body;
+    const { playerName, playerNumber, team } = req.body;
     try {
         const user = yield auth_1.getUser(req);
-        console.log('user', user);
-        // const team = await teamController.readTeam({ teamId, user: user?._id });
-        // if (user && team) {
-        if (user) {
+        const selectedTeam = yield teamController_1.default.readTeam({
+            team,
+            user: user === null || user === void 0 ? void 0 : user._id,
+        });
+        if (user && selectedTeam) {
             const player = yield playerController_1.default.createPlayer({
                 playerName,
                 playerNumber,
-                //  team: team._id,
+                team: selectedTeam._id,
                 user: user._id,
             });
-            console.log(player);
             return res.send(player);
         }
     }
@@ -55,12 +54,13 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     return res.status(401).json({ error: 'missing user' });
 }));
 router.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const team = yield teamController_1.default.readTeam(req.body.teamId);
+    const { playerName, playerNumber, team } = req.body;
+    const selectedTeam = yield teamController_1.default.readTeam(team);
     const player = yield playerController_1.default.updatePlayer({
         playerId: req.params.id,
-        playerName: req.body.playerName,
-        playerNumber: req.body.playerNumber,
-        team: team === null || team === void 0 ? void 0 : team._id,
+        playerName,
+        playerNumber,
+        team: selectedTeam === null || selectedTeam === void 0 ? void 0 : selectedTeam._id,
     });
     return res.send(player);
 }));

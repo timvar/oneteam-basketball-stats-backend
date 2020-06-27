@@ -21,14 +21,12 @@ const readAll = ({ user }) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(error.message);
     }
 });
-const createPlayer = ({ playerName, playerNumber, 
-//  team,
-user, }) => __awaiter(void 0, void 0, void 0, function* () {
+const createPlayer = ({ playerName, playerNumber, team, user, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return yield playerModel_1.default.create({
             playerName,
             playerNumber,
-            //    team,
+            team,
             user,
         });
     }

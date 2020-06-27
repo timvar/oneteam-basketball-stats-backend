@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const teamModel_1 = __importDefault(require("../models/teamModel"));
 const playerModel_1 = __importDefault(require("../models/playerModel"));
+const gameModel_1 = __importDefault(require("../models/gameModel"));
 const lodash_isequal_1 = __importDefault(require("lodash.isequal"));
 const readAll = ({ user }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -23,11 +24,11 @@ const readAll = ({ user }) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(error.message);
     }
 });
-const readTeam = ({ teamId, user, }) => __awaiter(void 0, void 0, void 0, function* () {
+const readTeam = ({ team, user, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const team = yield teamModel_1.default.findById(teamId);
-        if (lodash_isequal_1.default(team === null || team === void 0 ? void 0 : team.user, user)) {
-            return team;
+        const teamData = yield teamModel_1.default.findById(team);
+        if (lodash_isequal_1.default(teamData === null || teamData === void 0 ? void 0 : teamData.user, user)) {
+            return teamData;
         }
         else {
             throw new Error('unauthorized user');
@@ -37,15 +38,27 @@ const readTeam = ({ teamId, user, }) => __awaiter(void 0, void 0, void 0, functi
         throw new Error(error.message);
     }
 });
-const readPlayersByTeam = ({ teamId, user, }) => __awaiter(void 0, void 0, void 0, function* () {
+const readPlayersByTeam = ({ team, user, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const team = yield teamModel_1.default.findById(teamId);
-        if (lodash_isequal_1.default(team === null || team === void 0 ? void 0 : team.user, user)) {
-            return yield playerModel_1.default.find({ team: team === null || team === void 0 ? void 0 : team._id });
+        const teamData = yield teamModel_1.default.findById(team);
+        if (lodash_isequal_1.default(teamData === null || teamData === void 0 ? void 0 : teamData.user, user)) {
+            return yield playerModel_1.default.find({ team: teamData === null || teamData === void 0 ? void 0 : teamData._id });
         }
     }
     catch (error) {
         throw new Error('players not found');
+    }
+    return [];
+});
+const readGamesByTeam = ({ team, user, }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const teamData = yield teamModel_1.default.findById(team);
+        if (lodash_isequal_1.default(teamData === null || teamData === void 0 ? void 0 : teamData.user, user)) {
+            return yield gameModel_1.default.find({ team: teamData === null || teamData === void 0 ? void 0 : teamData._id });
+        }
+    }
+    catch (error) {
+        throw new Error('games not found');
     }
     return [];
 });
@@ -55,17 +68,18 @@ const createTeam = ({ teamName, user, }) => __awaiter(void 0, void 0, void 0, fu
         user,
     });
 });
-const updateTeam = ({ teamId, teamName, }) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield teamModel_1.default.findByIdAndUpdate(teamId, { teamName }, { new: true });
+const updateTeam = ({ team, teamName, }) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield teamModel_1.default.findByIdAndUpdate(team, { teamName }, { new: true });
 });
-const deleteTeam = ({ teamId }) => __awaiter(void 0, void 0, void 0, function* () {
-    yield teamModel_1.default.findByIdAndRemove(teamId);
+const deleteTeam = ({ team }) => __awaiter(void 0, void 0, void 0, function* () {
+    yield teamModel_1.default.findByIdAndRemove(team);
 });
 exports.default = {
     createTeam,
     readAll,
     readTeam,
     readPlayersByTeam,
+    readGamesByTeam,
     updateTeam,
     deleteTeam,
 };

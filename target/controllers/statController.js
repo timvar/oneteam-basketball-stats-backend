@@ -19,15 +19,7 @@ const readAll = () => __awaiter(void 0, void 0, void 0, function* () {
 const createStat = (stat) => __awaiter(void 0, void 0, void 0, function* () {
     return yield statModel_1.default.create(stat);
 });
-const updateStat = (stat) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield statModel_1.default.findByIdAndUpdate(stat.statId, stat, { new: true });
-});
-const deleteStat = ({ statId }) => __awaiter(void 0, void 0, void 0, function* () {
-    yield statModel_1.default.findByIdAndRemove(statId);
-});
 exports.default = {
     createStat,
     readAll,
-    updateStat,
-    deleteStat,
 };
